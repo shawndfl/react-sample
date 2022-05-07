@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 
 // Declare the redirect route
-app.get('/home', (req, res) => {
+app.get('/api/user', (req, res) => {
 
   // The req.query object has the query params that were sent to this route.
   const username = req.query.user
