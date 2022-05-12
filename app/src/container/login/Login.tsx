@@ -6,13 +6,17 @@ import Grid from '@mui/material/Grid'
 
 import "./login.css"
 
+interface user {
+    userName: string,
+    password: string
+}
+
 function Login() {
 
-    const [user, setUser] = useState();
-    const [pass, setPass] = useState();
+    const [user, setUser] = useState<user>({ userName: "", password: ""});    
 
-    function serverLogin(e) {
-        console.debug("Logging in " + user + " " + pass);        
+    function serverLogin(e :React.SyntheticEvent) {
+        console.debug("Logging in " + user.userName + " " + user.password);        
         return false;
     }
 
@@ -20,7 +24,7 @@ function Login() {
         width: "500px",
         height: "200px"
 
-    }
+    }    
 
     return (
         <Card variant="elevation" style ={cardStyle }>
@@ -30,14 +34,14 @@ function Login() {
                         xs={12}>
                         <TextField variant="standard" label="username" type="text"
                             onChange={
-                                e => setUser(e.target.value)
+                                e => setUser({...user, userName : e.target.value as string})
                         }></TextField>
                     </Grid>
                     <Grid item
                         xs={12}>
                         <TextField variant="standard" label="password" type="password" 
                             onChange={
-                                e => setPass(e.target.value)
+                                e => setUser({...user, password : e.target.value as string})
                         }></TextField>
                     </Grid>
                     <Grid item
