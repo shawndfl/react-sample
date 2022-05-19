@@ -7,6 +7,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import UserRequest from "./api/UserRequest";
 import { red } from '@mui/material/colors';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Footer from "container/footer/Footer"
 
 function App() {
     const menu = ['tribulation', 'Day of The Lord', "timline"];
@@ -14,17 +15,19 @@ function App() {
     const theme = createTheme({
         palette: {
             primary: {
-                main: red[500]
-            }
+                main: "#cc040a"
+
+            },
+            secondary: {
+                main: "#d3b15f"                
+            }            
         }
     });
 
     return (
         <ThemeProvider theme={theme}>
-            <div className="App">
-                <h1>Header</h1>
-                <Header/>
-                <Login/>
+            <div className="App">                
+                <Header/>                
                 <BrowserRouter>
                     <Routes>
                         <Route path="/"
@@ -33,6 +36,7 @@ function App() {
                             element={<UserRequest/>}></Route>
                     </Routes>
                 </BrowserRouter>
+                <Footer/>
             </div>
         </ThemeProvider>
     );
