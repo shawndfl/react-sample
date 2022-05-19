@@ -4,7 +4,7 @@ import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper';
 import Grid from "@mui/material/Grid"
 import Typography from '@mui/material/Typography';
-import Scene from  'container/scene/Scene';
+import ThreeJsInterface from  'container/mainView/ThreeJsInterface';
 
 function App() {
     const menu: string[] = ['tribulation', 'Day of The Lord', "timline"];
@@ -46,7 +46,7 @@ function App() {
                                 <Typography variant="h5" component="h2" color="text.secondary">                                    
                                     Simulation
                                 </Typography>
-                                <Scene width={600} height={600}></Scene>
+                                <ThreeJsInterface width={600} height={600}></ThreeJsInterface>
                             </Box>
                         </Grid>
                     </Grid>

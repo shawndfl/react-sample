@@ -1,11 +1,8 @@
-import logo from './logo.svg';
 import './App.css';
-import Login from './container/login/Login'
 import Header from './container/header/Header'
 import Home from './container/home/Home'
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import UserRequest from "./api/UserRequest";
-import { red } from '@mui/material/colors';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Footer from "container/footer/Footer"
 
