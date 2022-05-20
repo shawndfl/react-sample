@@ -2,6 +2,7 @@ import Box from "@mui/material/Box"
 import React, {useRef, useEffect, useState} from "react";
 import * as THREE from 'three';
 import MainScene from 'container/engine/MainScene';
+import { ReactDOM } from "react";
 
 export interface SceneProps {
     width: number;
@@ -24,7 +25,7 @@ export default function ThreeJsInterface(props : SceneProps) {
 
     const mount = useRef < HTMLDivElement > (null);
     const [isAnimating, setAnimating] = useState(true);
-    const controls = useRef < Controls > ();
+    const controls = useRef < Controls > ();    
 
     useEffect(() => {
         if (mount.current == undefined) {
@@ -33,13 +34,22 @@ export default function ThreeJsInterface(props : SceneProps) {
         }
         let width = mount.current.clientWidth
         let height = mount.current.clientHeight
-        let frameId: number;
-        const scene = new MainScene(width, height);
+        let frameId: number;        
 
         // Create the render
-        const renderer = new THREE.WebGLRenderer({antialias: true})
-        renderer.setClearColor('#a4c2f9')
-        renderer.setSize(width, height)
+        const renderer = new THREE.WebGLRenderer({antialias: true});
+
+        // set color for clearing the buffer
+        renderer.setClearColor('#8d8d8d');
+
+        // set the render size
+        renderer.setSize(width, height);
+
+        // we want shadows
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
+
+        const scene = new MainScene(width, height, renderer.domElement);
 
         // Render something awesome!
         const renderScene = () => {
@@ -110,11 +120,8 @@ export default function ThreeJsInterface(props : SceneProps) {
     }, [isAnimating])
 
     return <Box sx={{
-        width: {width},
-        height: {height}
+        width:"100%",
+        height: "100%"
     }}
-        ref={mount}
-        onClick={
-            () => setAnimating(!isAnimating)
-        }></Box>
+        ref={mount}></Box>
 }
