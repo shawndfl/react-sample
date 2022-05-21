@@ -6,7 +6,8 @@ import {
 	Spherical,
 	TOUCH,
 	Vector2,
-	Vector3
+	Vector3,
+	MathUtils
 } from 'three';
 
 // This set of controls performs orbiting, dollying (zooming), and panning.
@@ -221,7 +222,7 @@ export default class OrbitControls extends EventDispatcher {
 				}
 
 				// restrict phi to be between desired limits
-				spherical.phi = Math.max( scope.minPolarAngle, Math.min( scope.maxPolarAngle, spherical.phi ) );
+				spherical.phi = Math.max( scope.minPolarAngle, Math.min( scope.maxPolarAngle, spherical.phi ) );				
 
 				spherical.makeSafe();
 

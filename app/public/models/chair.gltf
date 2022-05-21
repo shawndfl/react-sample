@@ -11,7 +11,8 @@
                 0,
                 1,
                 2,
-                3
+                3,
+                6
             ]
         }
     ],
@@ -23,20 +24,6 @@
                 3.2109122276306152,
                 3.2109122276306152,
                 3.2109122276306152
-            ]
-        },
-        {
-            "name" : "Light",
-            "rotation" : [
-                0.05203302577137947,
-                0.677116870880127,
-                -0.35015374422073364,
-                0.6451338529586792
-            ],
-            "translation" : [
-                1.6257095336914062,
-                2.28131103515625,
-                -1.8454699516296387
             ]
         },
         {
@@ -54,12 +41,50 @@
             ]
         },
         {
-            "name" : "Point",
+            "mesh" : 1,
+            "name" : "Table",
+            "scale" : [
+                5.146484851837158,
+                0.3301648497581482,
+                8.918257713317871
+            ],
             "translation" : [
-                0,
-                1.1573269367218018,
+                -2.856956958770752,
+                1.7987761497497559,
                 0
             ]
+        },
+        {
+            "name" : "Overhead",
+            "translation" : [
+                -2.876854419708252,
+                6.43467378616333,
+                0
+            ]
+        },
+        {
+            "name" : "Sun",
+            "rotation" : [
+                -0.31059619784355164,
+                0.6342468857765198,
+                -0.6201819777488708,
+                0.34151896834373474
+            ],
+            "translation" : [
+                16.839298248291016,
+                21.754268646240234,
+                -5.374388694763184
+            ]
+        },
+        {
+            "name" : "Bone"
+        },
+        {
+            "children" : [
+                4,
+                5
+            ],
+            "name" : "SunController"
         }
     ],
     "materials" : [
@@ -93,6 +118,19 @@
                     },
                     "indices" : 3,
                     "material" : 0
+                }
+            ]
+        },
+        {
+            "name" : "Cube",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 4,
+                        "NORMAL" : 5,
+                        "TEXCOORD_0" : 6
+                    },
+                    "indices" : 7
                 }
             ]
         }
@@ -143,6 +181,40 @@
             "componentType" : 5123,
             "count" : 324,
             "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 4,
+            "componentType" : 5126,
+            "count" : 24,
+            "max" : [
+                0.30480000376701355,
+                0.30480000376701355,
+                0.30480000376701355
+            ],
+            "min" : [
+                -0.30480000376701355,
+                -0.30480000376701355,
+                -0.30480000376701355
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 5,
+            "componentType" : 5126,
+            "count" : 24,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 6,
+            "componentType" : 5126,
+            "count" : 24,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 7,
+            "componentType" : 5123,
+            "count" : 36,
+            "type" : "SCALAR"
         }
     ],
     "bufferViews" : [
@@ -165,11 +237,31 @@
             "buffer" : 0,
             "byteLength" : 648,
             "byteOffset" : 6528
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 288,
+            "byteOffset" : 7176
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 288,
+            "byteOffset" : 7464
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 192,
+            "byteOffset" : 7752
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 72,
+            "byteOffset" : 7944
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 7176,
+            "byteLength" : 8016,
             "uri" : "chair.bin"
         }
     ]

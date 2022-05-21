@@ -1,9 +1,12 @@
 
 import { ThreeMp } from "@mui/icons-material";
-import { Paper } from "@mui/material"
+import { Button, Paper } from "@mui/material"
 
 export default function TextureItem() {
     
+    const click = ( ) => {
+        
+    }
     return <Paper elevation={2}
         sx= {{
             height : 200,
@@ -11,6 +14,7 @@ export default function TextureItem() {
      backgroundColor: (theme) =>
         theme.palette.secondary.light
      
-    }}> Testing
+    }}> 
+    <Button color='inherit' variant="contained" sx={ { borderRadius: 28 } } onClick={click}>Add texture</Button>
     </Paper>;
 }

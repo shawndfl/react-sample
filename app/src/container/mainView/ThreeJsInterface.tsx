@@ -3,6 +3,7 @@ import React, {useRef, useEffect, useState} from "react";
 import * as THREE from 'three';
 import MainScene from 'container/engine/MainScene';
 import { ReactDOM } from "react";
+import { MainSceneContext } from "context/SceneContext";
 
 export interface SceneProps {
     width: number;
@@ -25,7 +26,7 @@ export default function ThreeJsInterface(props : SceneProps) {
 
     const mount = useRef < HTMLDivElement > (null);
     const [isAnimating, setAnimating] = useState(true);
-    const controls = useRef < Controls > ();    
+    const controls = useRef < Controls > ();        
 
     useEffect(() => {
         if (mount.current == undefined) {
@@ -47,13 +48,20 @@ export default function ThreeJsInterface(props : SceneProps) {
 
         // we want shadows
         renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;    
+        
+        // setup tone mapping for awesome lighting!
+        renderer.outputEncoding = THREE.sRGBEncoding;
+		renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+        // initial exposure. This will be changed in the main scene as the sun sets
+		renderer.toneMappingExposure = 0.1100;
 
         const scene = new MainScene(width, height, renderer.domElement);
 
         // Render something awesome!
         const renderScene = () => {
-            scene.update();
+            scene.update(renderer);
             renderer.render(scene.scene, scene.camera)
         }
 
@@ -70,8 +78,8 @@ export default function ThreeJsInterface(props : SceneProps) {
             }
         }
 
-        const animate = () => {                     
-            
+        const animate = () => {                                 
+
             renderScene()
             frameId = window.requestAnimationFrame(animate)
         }

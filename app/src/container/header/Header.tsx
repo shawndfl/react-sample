@@ -6,25 +6,17 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 export default function Header() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar className="tooBarBlack" >
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            3D simulation
+        <Toolbar className="tooBarBlack" >          
+          <Typography variant="h4" component="h4" textAlign="center" sx={{ flexGrow: 1 }}>
+            Sample 3D Simulation with ThreeJS
           </Typography>
-          <Button color="inherit">Login</Button>
+          <IconButton component="a" target="_blank" href="https://github.com/shawndfl"><GitHubIcon/></IconButton>
         </Toolbar>
       </AppBar>
     </Box>

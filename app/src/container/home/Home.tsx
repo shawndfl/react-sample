@@ -2,42 +2,69 @@ import './home.css';
 import Container from "@mui/material/Container/"
 import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper';
+import Card from '@mui/material/Card';
 import Grid from "@mui/material/Grid"
 import Typography from '@mui/material/Typography';
-import ThreeJsInterface from  'container/mainView/ThreeJsInterface';
+import ThreeJsInterface from 'container/mainView/ThreeJsInterface';
 import TextureSelector from 'container/textureSelector/TextureSelector';
+import SceneOptions from 'container/sceneOptions/SceneOptions';
+import { useState, createContext } from 'react';
+import {ISceneProviderProps, ISceneData} from 'context/SceneContext';
 
-function App() {
-    const menu: string[] = ['tribulation', 'Day of The Lord', "timline"];
+/**
+ * The main home page. This will display the 3d scene and some other controls
+ */
+export default function Home() {
 
     function loadPage(item : string) {
         console.debug("loading " + item);
     }
+    
+    // scene state
+    const [sceneData, setSceneData] = useState<ISceneData>();
+
+    // context provider for value state
+    const providerValue: ISceneProviderProps = {        
+        data: sceneData,
+        setState: setSceneData
+    }   
+
+    // context provider
+    const MainSceneContext = createContext<ISceneProviderProps>(providerValue);         
 
     return (
-        <Container maxWidth="lg">
-            <Paper elevation={3}>
-                <Box color="primary">
-                    <Grid container>
-                        <Grid item
-                            xs={2}>
-                            <TextureSelector/>
+        <Box color="primary" my={2}>
+            <MainSceneContext.Provider value={providerValue}>
+                <Container maxWidth="lg">
+                    <Card>
+                        <Grid container>                        
+                            <Grid item
+                                xs={12}>
+                                <Box>                                
+                                    <Box sx={
+                                            {
+                                                m: 1,
+                                                textAlign: "left",
+                                                height: 600,
+                                                transform: 'translateZ(0px)', 
+                                                flexGrow: 1                                            
+                                            }
+                                        }
+                                        padding={1}>
+                                        <ThreeJsInterface width={600} height={600}></ThreeJsInterface>
+                                        <SceneOptions></SceneOptions>
+                                    </Box>   
+                                    <Box m={2}>
+                                    <Typography variant="subtitle1">
+                                        Drag the mouse across the scene to orbit around the object. Use the mouse wheel to zoom in and out.
+                                    </Typography>                                       
+                                    </Box>                  
+                                </Box>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={10}>
-                            <Box sx={{
-                                        m: 1,
-                                        textAlign: "left",
-                                        height: 600
-                                    }}
-                                padding={1}>                                
-                                <ThreeJsInterface width={600} height={600}></ThreeJsInterface>
-                            </Box>
-                        </Grid>
-                    </Grid>
-                </Box>
-            </Paper>
-        </Container>
+                    </Card>
+                </Container>
+            </MainSceneContext.Provider>
+        </Box>
     );
 }
-
-export default App;

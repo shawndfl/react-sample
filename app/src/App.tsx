@@ -5,9 +5,9 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import UserRequest from "./api/UserRequest";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Footer from "container/footer/Footer"
+import { Box } from '@mui/material';
 
-function App() {
-    const menu = ['tribulation', 'Day of The Lord', "timline"];
+function App() {    
 
     const theme = createTheme({
         palette: {
@@ -17,13 +17,19 @@ function App() {
             },
             secondary: {
                 main: "#9e9d24"                
-            }            
+            }, 
+            text: {
+                primary: "#212121",
+                secondary: "#000000"
+            }           
         }
     });
 
     return (
         <ThemeProvider theme={theme}>
-            <div className="App">                
+            <Box sx={{
+                backgroundColor: (theme) => theme.palette.primary.light 
+            }}>                
                 <Header/>                
                 <BrowserRouter>
                     <Routes>
@@ -34,7 +40,7 @@ function App() {
                     </Routes>
                 </BrowserRouter>
                 <Footer/>
-            </div>
+            </Box>
         </ThemeProvider>
     );
 }

@@ -4,6 +4,9 @@ import OrbitControls from "./OrbitControls";
 import * as THREE from 'three';
 import GLTFLoader from './GLTFLoader';
 import floorTexture from 'img/floor2.jpg'
+import Sky from "./Sky"
+import { DayState } from "context/SceneContext";
+
 /**
  * This is the main scene that will be used for rendering 
  * models and lights.
@@ -17,19 +20,26 @@ export default class MainScene {
     /**The threejs scene */
     scene : THREE.Scene;
 
+    /**
+     * Sky box
+     */
+    sky : Sky;
+    //arrowHelper : THREE.ArrowHelper;
+    //arrowHelperUp : THREE.ArrowHelper;
+
+    /**
+     * Direction light
+     */
+    dirLight : THREE.DirectionalLight;
+    sunControllerNode : THREE.Object3D;
+    sunNode : THREE.Object3D;;
+
     /** These are controls used to orbit the camera */
     controls : OrbitControls;
     /**
      * Threejs camera
      */
     camera : THREE.PerspectiveCamera;
-
-    /**
-     * Sample mesh for rendering
-     */
-    cubeMesh : THREE.Mesh;
-    cubeGeo : THREE.BoxGeometry;
-    cubeMat : THREE.MeshPhongMaterial;
 
     /**
      * Ground mesh
@@ -39,13 +49,16 @@ export default class MainScene {
     groundMat : THREE.MeshPhongMaterial;
 
     /**
+     * Used to show different lighting
+     */
+    dayState: DayState;
+
+    
+    /**
      *  hemisphere
      */
-    light1 : THREE.HemisphereLight;
-    /**
-     * Direction light
-     */
-    dirLight : THREE.DirectionalLight;
+    overhead : THREE.SpotLight;
+
 
     /**
      * Constructor
@@ -56,19 +69,55 @@ export default class MainScene {
         this.width = width;
         this.height = height;
 
+        // main scene and camera
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-        this.cubeGeo = new THREE.BoxGeometry(1, 1, 1);
-        this.cubeMat = new THREE.MeshPhongMaterial({color: 0x234588});
-        this.cubeMesh = new THREE.Mesh(this.cubeGeo, this.cubeMat);
-        this.cubeMesh.castShadow = true;
 
+        // let there be light
+        this.sunNode = new THREE.Object3D(); // this will be set when the model loads
+        this.sky = new Sky();
+        this.sky.scale.setScalar(450000);
+        this.scene.add(this.sky);
+        const skyMat = this.sky.material;
+        if (skyMat instanceof THREE.ShaderMaterial) {
+            const uniforms = skyMat.uniforms;
+
+            uniforms['turbidity'].value = 10;
+            uniforms['rayleigh'].value = 3;
+            uniforms['mieCoefficient'].value = .005;
+            uniforms['mieDirectionalG'].value = .7;
+            const phi = THREE.MathUtils.degToRad(0);
+            const theta = THREE.MathUtils.degToRad(20.0);
+
+            // calculate the sun's position
+            const sun = new THREE.Vector3();
+            sun.setFromSphericalCoords(1, phi, theta);
+            uniforms['sunPosition'].value.copy(sun);
+        }
+
+        this.dayState = DayState.Loop;
+
+        // manually create the ground
         this.groundGeo = new THREE.PlaneGeometry(14, 14);
         this.groundGeo.rotateX(THREE.MathUtils.degToRad(-90));
         this.groundMat = new THREE.MeshPhongMaterial({color: 0x646464});
         this.groundMesh = new THREE.Mesh(this.groundGeo, this.groundMat);
         this.groundMesh.position.set(0, 0, 0);
         this.groundMesh.receiveShadow = true;
+        this.scene.add(this.groundMesh);
+
+        // helpers
+        //const dir = new THREE.Vector3(1, 0, 0);                
+        //const origin = new THREE.Vector3(0, 0, 0);        
+        //const color1 = 0xffff00;
+        //this.arrowHelper = new THREE.ArrowHelper(dir, origin, 20, color1);
+        //this.scene.add(this.arrowHelper);        
+
+        //const north = new THREE.Vector3(0, -1, 0);                                        
+        //const color2 = 0xff0000;
+        //this.arrowHelperUp = new THREE.ArrowHelper(dir, origin, 20, color2);
+        //this.scene.add(this.arrowHelperUp);
+
 
         // instantiate a loader
         const texture = new THREE.TextureLoader();
@@ -92,25 +141,36 @@ export default class MainScene {
         this.controls.enableDamping = true;
         this.controls.minDistance = 1;
         this.controls.maxDistance = 10;
+        this.controls.maxPolarAngle = THREE.MathUtils.degToRad(88);
         this.controls.target.set(0, 0.35, 0);
         this.controls.update();
 
-        const light = new THREE.AmbientLight(0xffffff); // soft white light
+        const light = new THREE.AmbientLight(0xc4c4c4); // soft white light
         this.scene.add(light);
 
-        this.light1 = new THREE.HemisphereLight(0xffffff, 1.0);
-        this.light1.position.set(0, 0, 0);
-        // this.scene.add(this.light1);
+        const targetObject = new THREE.Object3D();
+        targetObject.position.set(0, -10, 0);
+        this.scene.add(targetObject);
 
+        this.overhead = new THREE.SpotLight("#FFE484", 1.0);
+        this.overhead.castShadow = true;
+        this.overhead.distance = 0;
+        this.overhead.angle = THREE.MathUtils.degToRad(30);
+
+        this.overhead.penumbra = .5;
+        this.overhead.target = targetObject;
+
+        // this light will be added to the scene when the model is loaded
+        // it will use the sun as a parent node
         this.dirLight = new THREE.DirectionalLight(0xffffff);
         this.dirLight.position.set(0, 0, 0);
         this.dirLight.castShadow = true;
-        // this.scene.add(this.dirLight);
+
+        // this will be set when the model is loaded
+        this.sunControllerNode = new THREE.Object3D();
 
         this.camera.position.z = 4;
         this.camera.position.y = 4;
-        // this.scene.add(this.cubeMesh);
-        this.scene.add(this.groundMesh);
 
         // instantiate a loader
         const loader = new GLTFLoader();
@@ -121,23 +181,35 @@ export default class MainScene {
                 'models/chair.gltf',
 
             // called when resource is loaded
-                (gltf : any) => { // object.castShadow = true
-                const mesh1: THREE.Mesh = gltf.scene.getObjectByName('Chair');
+                (gltf : any) => {
+                // object.castShadow = true
 
-                const light1Node: THREE.Object3D = gltf.scene.getObjectByName('Point');
-                light1Node.add(this.light1);
-
-                const dirLightNode: THREE.Object3D = gltf.scene.getObjectByName('Light');
-                dirLightNode.add(this.dirLight);
-
-                const mat = mesh1.material;
-
-                mesh1.castShadow = true;
-                let color3D = new THREE.Color( "#000000");                
-
-                if(mat instanceof THREE.MeshBasicMaterial) {
+                // set up the chair
+                const chairMesh: THREE.Mesh = gltf.scene.getObjectByName('Chair');
+                chairMesh.castShadow = true;
+                const mat = chairMesh.material;
+                let color3D = new THREE.Color("#000000");
+                if (mat instanceof THREE.MeshBasicMaterial) {
                     mat.color = color3D;
                 }
+
+                // set up the table
+                const tableMesh: THREE.Mesh = gltf.scene.getObjectByName('Table');
+                tableMesh.castShadow = true;
+
+                // setup the overhead light
+                const overheadNode: THREE.Object3D = gltf.scene.getObjectByName('Overhead');
+                this.overhead.position.x = overheadNode.position.x;
+                this.overhead.position.y = overheadNode.position.y;
+                this.overhead.position.z = overheadNode.position.z;
+                overheadNode.add(this.overhead);
+
+                // set up the sun
+                this.sunNode = gltf.scene.getObjectByName('Sun');
+                this.sunNode.add(this.dirLight);
+
+                // the sun controller used to simulate sun rise and sun set
+                this.sunControllerNode = gltf.scene.getObjectByName('SunController');
 
                 this.scene.add(gltf.scene);
 
@@ -156,10 +228,73 @@ export default class MainScene {
     }
 
     /**
+     * This function will set the sun's az and elevation. 
+     * based on the transformation of the sun controller in world space.
+     * The sky shader will also be updated         
+     */
+    setSunAngle(render : THREE.WebGLRenderer) {
+
+        const sunPosition = new THREE.Vector3();
+        this.dirLight.getWorldPosition(sunPosition);
+        const controllerPos = new THREE.Vector3();
+        const sunPos = new THREE.Vector3();
+
+        this.sunControllerNode.getWorldPosition(controllerPos);
+        this.sunNode.getWorldPosition(sunPos);
+        let sunDirection = controllerPos.sub(sunPos);
+        sunDirection.normalize();
+        sunDirection.negate();        
+
+        const sunTransform = sunDirection;
+
+        // is the sun up
+        const up = new THREE.Vector3(0, 1, 0);               
+        const isSunUp = up.dot(sunTransform) >= 0;
+
+        // is the light from the sun visible
+        this.dirLight.visible = isSunUp;
+
+        // helpers
+        //this.arrowHelper.setDirection(sunDirection);        
+        //this.arrowHelperUp.setDirection(up);
+
+        // simulate exposure change
+        const nightExposure = .5;
+        const dayExposure = .35;
+        const exposureStep = .005;
+        if (isSunUp && render.toneMappingExposure > dayExposure) {
+            render.toneMappingExposure -= exposureStep;
+        } else if (! isSunUp && render.toneMappingExposure < nightExposure) {
+            render.toneMappingExposure += exposureStep;
+        }
+
+        // clamp the exposure value
+        render.toneMappingExposure = THREE.MathUtils.clamp(render.toneMappingExposure, dayExposure, nightExposure);
+
+        const skyMat = this.sky.material;
+        if (skyMat instanceof THREE.ShaderMaterial) {
+            const uniforms = skyMat.uniforms;
+            uniforms['sunPosition'].value.copy(sunTransform);
+        }
+    }
+
+    /**
      * Does the rendering
      */
-    update() {
-        this.cubeMesh.rotation.y += 0.01;
+    update(render : THREE.WebGLRenderer) {
+
+        if(this.dayState == DayState.Loop) {
+            this.sunControllerNode.rotateX(.01);
+        } else if(this.dayState == DayState.Day) {
+            const axis = new THREE.Vector3(0 ,0, -1);
+            this.sunControllerNode.setRotationFromAxisAngle(axis, 0);
+        } else if(this.dayState == DayState.Night) {
+            const axis = new THREE.Vector3(0,0, -1);
+            this.sunControllerNode.setRotationFromAxisAngle(axis, 180);
+        }
+
+        this.setSunAngle(render);
+
         this.controls.update();
     }
 
@@ -180,9 +315,6 @@ export default class MainScene {
      * Clean up webGL resources code  
      */
     dispose() {
-        this.scene.remove(this.cubeMesh);
-        this.cubeGeo.dispose();
-        this.cubeMat.dispose();
 
         this.scene.remove(this.groundMesh);
         this.groundGeo.dispose();
