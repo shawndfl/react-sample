@@ -21,50 +21,40 @@ export default function Home() {
     }
     
     // scene state
-    const [sceneData, setSceneData] = useState<ISceneData>();
-
-    // context provider for value state
-    const providerValue: ISceneProviderProps = {        
-        data: sceneData,
-        setState: setSceneData
-    }   
-
-    // context provider
-    const MainSceneContext = createContext<ISceneProviderProps>(providerValue);         
+    //const sceneData = useRef<ISceneData>();
+    
 
     return (
-        <Box color="primary" my={2}>
-            <MainSceneContext.Provider value={providerValue}>
-                <Container maxWidth="lg">
-                    <Card>
-                        <Grid container>                        
-                            <Grid item
-                                xs={12}>
-                                <Box>                                
-                                    <Box sx={
-                                            {
-                                                m: 1,
-                                                textAlign: "left",
-                                                height: 600,
-                                                transform: 'translateZ(0px)', 
-                                                flexGrow: 1                                            
-                                            }
+        <Box color="primary" my={2}>            
+            <Container maxWidth="lg">
+                <Card>
+                    <Grid container>                        
+                        <Grid item
+                            xs={12}>
+                            <Box>                                
+                                <Box sx={
+                                        {
+                                            m: 1,
+                                            textAlign: "left",
+                                            height: 600,
+                                            transform: 'translateZ(0px)', 
+                                            flexGrow: 1                                            
                                         }
-                                        padding={1}>
-                                        <ThreeJsInterface width={600} height={600}></ThreeJsInterface>
-                                        <SceneOptions></SceneOptions>
-                                    </Box>   
-                                    <Box m={2}>
-                                    <Typography variant="subtitle1">
-                                        Drag the mouse across the scene to orbit around the object. Use the mouse wheel to zoom in and out.
-                                    </Typography>                                       
-                                    </Box>                  
-                                </Box>
-                            </Grid>
+                                    }
+                                    padding={1}>
+                                    <ThreeJsInterface width={600} height={600}></ThreeJsInterface>
+                                    <SceneOptions ></SceneOptions>
+                                </Box>   
+                                <Box m={2}>
+                                <Typography variant="subtitle1">
+                                    Drag the mouse across the scene to orbit around the object. Use the mouse wheel to zoom in and out.
+                                </Typography>                                       
+                                </Box>                  
+                            </Box>
                         </Grid>
-                    </Card>
-                </Container>
-            </MainSceneContext.Provider>
+                    </Grid>
+                </Card>
+            </Container>            
         </Box>
     );
 }

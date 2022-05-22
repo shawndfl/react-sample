@@ -3,11 +3,12 @@ import React, {useRef, useEffect, useState} from "react";
 import * as THREE from 'three';
 import MainScene from 'container/engine/MainScene';
 import { ReactDOM } from "react";
-import { MainSceneContext } from "context/SceneContext";
+import { ISceneData } from "context/SceneContext";
 
 export interface SceneProps {
     width: number;
-    height: number;
+    height: number;  
+    //sceneData: ISceneData;  
 }
 
 interface Controls {
@@ -23,46 +24,28 @@ interface Controls {
 export default function ThreeJsInterface(props : SceneProps) {
     const width = props.width;
     const height = props.height;
+    //const sceneData = props.sceneData
 
     const mount = useRef < HTMLDivElement > (null);
+
     const [isAnimating, setAnimating] = useState(true);
-    const controls = useRef < Controls > ();        
+    const controls = useRef < Controls > ();                
 
     useEffect(() => {
         if (mount.current == undefined) {
             console.error("mount undefined");
             return;
-        }
+        }        
+
         let width = mount.current.clientWidth
         let height = mount.current.clientHeight
-        let frameId: number;        
-
-        // Create the render
-        const renderer = new THREE.WebGLRenderer({antialias: true});
-
-        // set color for clearing the buffer
-        renderer.setClearColor('#8d8d8d');
-
-        // set the render size
-        renderer.setSize(width, height);
-
-        // we want shadows
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;    
+        let frameId: number;                   
         
-        // setup tone mapping for awesome lighting!
-        renderer.outputEncoding = THREE.sRGBEncoding;
-		renderer.toneMapping = THREE.ACESFilmicToneMapping;
-
-        // initial exposure. This will be changed in the main scene as the sun sets
-		renderer.toneMappingExposure = 0.1100;
-
-        const scene = new MainScene(width, height, renderer.domElement);
+        const scene = new MainScene(width, height);
 
         // Render something awesome!
         const renderScene = () => {
-            scene.update(renderer);
-            renderer.render(scene.scene, scene.camera)
+            scene.render();            
         }
 
         // resize the container
@@ -70,8 +53,7 @@ export default function ThreeJsInterface(props : SceneProps) {
             if (mount.current != undefined) {
 
                 width = mount.current.clientWidth
-                height = mount.current.clientHeight                
-                renderer.setSize(width, height)
+                height = mount.current.clientHeight                                
                 scene.resize(width, height);
                 
                 renderScene();
@@ -95,7 +77,11 @@ export default function ThreeJsInterface(props : SceneProps) {
             frameId = 0
         };
 
-        mount.current.appendChild(renderer.domElement);
+        // connect dom to WebGL
+        mount.current.appendChild(scene.renderer.domElement);
+        scene.initializeControls( mount.current);
+
+        // add resize listener
         window.addEventListener('resize', handleResize);
         start();
 
@@ -108,7 +94,7 @@ export default function ThreeJsInterface(props : SceneProps) {
             stop()
             window.removeEventListener('resize', handleResize);
             if (mount.current != undefined) {
-                mount.current.removeChild(renderer.domElement)
+                mount.current.removeChild(scene.renderer.domElement)
             }
 
             scene.dispose();

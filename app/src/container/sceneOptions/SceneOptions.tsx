@@ -19,12 +19,14 @@ import { MainSceneContext } from 'context/SceneContext';
 export default function SceneOptions() {
   const sceneContext = useContext(MainSceneContext);
 
+  //const sceneData: props.sceneData;
+
   const actions = [
     { icon: <CameraAltIcon />, name: 'Rotate', handler: rotate },
     { icon: <LightbulbIcon />, name: 'Lighting', handler: adjustLight  },  
     { icon: <TableRestaurantIcon />, name: 'Add Table', handler: addTable  },  
   ];
-  
+
   function addTable() {
     console.debug("Add table");
   }

@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import GLTFLoader from './GLTFLoader';
 import floorTexture from 'img/floor2.jpg'
 import Sky from "./Sky"
-import { DayState } from "context/SceneContext";
+import {DayState} from "context/SceneContext";
 
 /**
  * This is the main scene that will be used for rendering 
@@ -17,6 +17,11 @@ export default class MainScene {
     width : number;
     height : number;
 
+    /**
+     * The ThreeJS renderer
+     */
+    renderer : THREE.WebGLRenderer;
+
     /**The threejs scene */
     scene : THREE.Scene;
 
@@ -24,18 +29,19 @@ export default class MainScene {
      * Sky box
      */
     sky : Sky;
-    //arrowHelper : THREE.ArrowHelper;
-    //arrowHelperUp : THREE.ArrowHelper;
+    // arrowHelper : THREE.ArrowHelper;
+    // arrowHelperUp : THREE.ArrowHelper;
 
     /**
      * Direction light
      */
     dirLight : THREE.DirectionalLight;
     sunControllerNode : THREE.Object3D;
-    sunNode : THREE.Object3D;;
+    sunNode : THREE.Object3D;
+    lightBulb : THREE.Mesh;
 
     /** These are controls used to orbit the camera */
-    controls : OrbitControls;
+    controls : OrbitControls | undefined;
     /**
      * Threejs camera
      */
@@ -51,9 +57,9 @@ export default class MainScene {
     /**
      * Used to show different lighting
      */
-    dayState: DayState;
+    dayState : DayState;
 
-    
+
     /**
      *  hemisphere
      */
@@ -65,9 +71,15 @@ export default class MainScene {
      * @param width 
      * @param height 
      */
-    constructor(width : number, height : number, parent : HTMLCanvasElement) {
+    constructor(width : number, height : number) {
         this.width = width;
         this.height = height;
+
+        // Create the render
+        this.renderer = new THREE.WebGLRenderer({antialias: true});
+
+        // set up the renderer
+        this.renderSetup(this.renderer, this.width, this.height);
 
         // main scene and camera
         this.scene = new THREE.Scene();
@@ -106,17 +118,21 @@ export default class MainScene {
         this.groundMesh.receiveShadow = true;
         this.scene.add(this.groundMesh);
 
-        // helpers
-        //const dir = new THREE.Vector3(1, 0, 0);                
-        //const origin = new THREE.Vector3(0, 0, 0);        
-        //const color1 = 0xffff00;
-        //this.arrowHelper = new THREE.ArrowHelper(dir, origin, 20, color1);
-        //this.scene.add(this.arrowHelper);        
+        // default light bulb until the model is loaded
+        this.lightBulb = new THREE.Mesh();
+        this.lightBulb.material = new THREE.MeshBasicMaterial({color: "#323232"});
 
-        //const north = new THREE.Vector3(0, -1, 0);                                        
-        //const color2 = 0xff0000;
-        //this.arrowHelperUp = new THREE.ArrowHelper(dir, origin, 20, color2);
-        //this.scene.add(this.arrowHelperUp);
+        // helpers
+        // const dir = new THREE.Vector3(1, 0, 0);
+        // const origin = new THREE.Vector3(0, 0, 0);
+        // const color1 = 0xffff00;
+        // this.arrowHelper = new THREE.ArrowHelper(dir, origin, 20, color1);
+        // this.scene.add(this.arrowHelper);
+
+        // const north = new THREE.Vector3(0, -1, 0);
+        // const color2 = 0xff0000;
+        // this.arrowHelperUp = new THREE.ArrowHelper(dir, origin, 20, color2);
+        // this.scene.add(this.arrowHelperUp);
 
 
         // instantiate a loader
@@ -135,15 +151,6 @@ export default class MainScene {
                 this.groundMat.map = texture;
             }
         );
-
-        this.controls = new OrbitControls(this.camera, parent);
-
-        this.controls.enableDamping = true;
-        this.controls.minDistance = 1;
-        this.controls.maxDistance = 10;
-        this.controls.maxPolarAngle = THREE.MathUtils.degToRad(88);
-        this.controls.target.set(0, 0.35, 0);
-        this.controls.update();
 
         const light = new THREE.AmbientLight(0xc4c4c4); // soft white light
         this.scene.add(light);
@@ -172,30 +179,79 @@ export default class MainScene {
         this.camera.position.z = 4;
         this.camera.position.y = 4;
 
-        // instantiate a loader
+        this.loadModel();
+    }
+
+    /**
+     * 
+     * @param parent The parent html element that holds the scene
+     */
+    initializeControls(parent : HTMLDivElement) {
+
+        this.controls = new OrbitControls(this.camera, parent);
+
+        this.controls.dampingFactor = .05;
+        this.controls.enableDamping = true;
+        this.controls.minDistance = 1;
+        this.controls.maxDistance = 10;
+        this.controls.maxPolarAngle = THREE.MathUtils.degToRad(88);
+        this.controls.target.set(0, 0.35, 0);
+        this.controls.update();
+
+        // perform a resize with the new parent
+        this.resize(parent.clientWidth, parent.clientHeight);
+    }
+
+    renderSetup(renderer : THREE.WebGLRenderer, width : number, height : number) { // set color for clearing the buffer
+        renderer.setClearColor('#8d8d8d');
+
+        // set the render size
+        renderer.setSize(width, height);
+
+        // we want shadows
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+        // setup tone mapping for awesome lighting!
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+        // initial exposure. This will be changed in the main scene as the sun sets
+        renderer.toneMappingExposure = 0.1100;
+    }
+
+    /**
+     * Load the model for this scene
+     */
+    loadModel() { // instantiate a loader
         const loader = new GLTFLoader();
 
         // load a resource
         loader.load(
             // resource URL
-                'models/chair.gltf',
+            'models/chair.gltf',
 
             // called when resource is loaded
-                (gltf : any) => {
+            (gltf : any) => {
                 // object.castShadow = true
 
+                gltf.scene.traverse((child: any) => {
+                    if ((child as THREE.Mesh).isMesh) {
+                        child.castShadow = true                                                
+                    }
+                });
+
                 // set up the chair
-                const chairMesh: THREE.Mesh = gltf.scene.getObjectByName('Chair');
-                chairMesh.castShadow = true;
-                const mat = chairMesh.material;
-                let color3D = new THREE.Color("#000000");
-                if (mat instanceof THREE.MeshBasicMaterial) {
-                    mat.color = color3D;
-                }
+                //const chairMesh: THREE.Mesh = gltf.scene.getObjectByName('Chair');
+                //chairMesh.castShadow = true;               
 
                 // set up the table
-                const tableMesh: THREE.Mesh = gltf.scene.getObjectByName('Table');
-                tableMesh.castShadow = true;
+                //const tableMesh: THREE.Mesh = gltf.scene.getObjectByName('Table');
+                //tableMesh.castShadow = true;
+
+                // 
+                //const tableMesh: THREE.Mesh = gltf.scene.getObjectByName('Table');
+                //tableMesh.castShadow = true;
 
                 // setup the overhead light
                 const overheadNode: THREE.Object3D = gltf.scene.getObjectByName('Overhead');
@@ -207,6 +263,11 @@ export default class MainScene {
                 // set up the sun
                 this.sunNode = gltf.scene.getObjectByName('Sun');
                 this.sunNode.add(this.dirLight);
+
+                // overhead light
+                this.lightBulb = gltf.scene.getObjectByName('LightBulb');
+                this.lightBulb.material = new THREE.MeshBasicMaterial({color: "#ffffff"});
+
 
                 // the sun controller used to simulate sun rise and sun set
                 this.sunControllerNode = gltf.scene.getObjectByName('SunController');
@@ -243,20 +304,28 @@ export default class MainScene {
         this.sunNode.getWorldPosition(sunPos);
         let sunDirection = controllerPos.sub(sunPos);
         sunDirection.normalize();
-        sunDirection.negate();        
+        sunDirection.negate();
 
         const sunTransform = sunDirection;
 
         // is the sun up
-        const up = new THREE.Vector3(0, 1, 0);               
+        const up = new THREE.Vector3(0, 1, 0);
         const isSunUp = up.dot(sunTransform) >= 0;
 
-        // is the light from the sun visible
-        this.dirLight.visible = isSunUp;
+        // Toggle lights based on the sun position
+        if(isSunUp) {   
+            this.overhead.visible = false;         
+            this.dirLight.visible = true;
+            this.lightBulb.material= new THREE.MeshBasicMaterial({color: "#323232"})
+        } else {            
+            this.overhead.visible = true;
+            this.dirLight.visible = false;
+            this.lightBulb.material= new THREE.MeshBasicMaterial({color: "#ffffff"})
+        }
 
         // helpers
-        //this.arrowHelper.setDirection(sunDirection);        
-        //this.arrowHelperUp.setDirection(up);
+        // this.arrowHelper.setDirection(sunDirection);
+        // this.arrowHelperUp.setDirection(up);
 
         // simulate exposure change
         const nightExposure = .5;
@@ -281,21 +350,27 @@ export default class MainScene {
     /**
      * Does the rendering
      */
-    update(render : THREE.WebGLRenderer) {
+    render() {
 
-        if(this.dayState == DayState.Loop) {
+        if (this.dayState == DayState.Loop) {
             this.sunControllerNode.rotateX(.01);
-        } else if(this.dayState == DayState.Day) {
-            const axis = new THREE.Vector3(0 ,0, -1);
+        } else if (this.dayState == DayState.Day) {
+            const axis = new THREE.Vector3(0, 0, -1);
             this.sunControllerNode.setRotationFromAxisAngle(axis, 0);
-        } else if(this.dayState == DayState.Night) {
-            const axis = new THREE.Vector3(0,0, -1);
+        } else if (this.dayState == DayState.Night) {
+            const axis = new THREE.Vector3(0, 0, -1);
             this.sunControllerNode.setRotationFromAxisAngle(axis, 180);
         }
 
-        this.setSunAngle(render);
+        this.setSunAngle(this.renderer);
 
-        this.controls.update();
+        // may not have been initialized yet
+        if (this.controls != undefined) {
+            this.controls.update();
+        }
+
+        // do the WebGL render
+        this.renderer.render(this.scene, this.camera)
     }
 
     /**
@@ -309,13 +384,15 @@ export default class MainScene {
 
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
+
+        this.renderer.setSize(width, height)
     }
 
     /**
      * Clean up webGL resources code  
      */
     dispose() {
-
+        console.log("Dispose");
         this.scene.remove(this.groundMesh);
         this.groundGeo.dispose();
         this.groundMat.dispose();
