@@ -110,7 +110,7 @@ export default class MainScene {
         this.dayState = DayState.Loop;
 
         // manually create the ground
-        this.groundGeo = new THREE.PlaneGeometry(14, 14);
+        this.groundGeo = new THREE.PlaneGeometry(30, 30);
         this.groundGeo.rotateX(THREE.MathUtils.degToRad(-90));
         this.groundMat = new THREE.MeshPhongMaterial({color: 0x646464});
         this.groundMesh = new THREE.Mesh(this.groundGeo, this.groundMat);
@@ -145,9 +145,9 @@ export default class MainScene {
 
             // onLoad callback
                 (texture) => { // in this example we create the material when the texture is loaded
-                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapS = THREE.MirroredRepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set(1, 4);
+                texture.repeat.set(2, 8);
                 this.groundMat.map = texture;
             }
         );
@@ -233,25 +233,17 @@ export default class MainScene {
 
             // called when resource is loaded
             (gltf : any) => {
-                // object.castShadow = true
-
+                
+                // turn on shadows
                 gltf.scene.traverse((child: any) => {
                     if ((child as THREE.Mesh).isMesh) {
                         child.castShadow = true                                                
                     }
-                });
+                });               
 
-                // set up the chair
-                //const chairMesh: THREE.Mesh = gltf.scene.getObjectByName('Chair');
-                //chairMesh.castShadow = true;               
-
-                // set up the table
-                //const tableMesh: THREE.Mesh = gltf.scene.getObjectByName('Table');
-                //tableMesh.castShadow = true;
-
-                // 
-                //const tableMesh: THREE.Mesh = gltf.scene.getObjectByName('Table');
-                //tableMesh.castShadow = true;
+                // cast shadows onto the table
+                const tableTop: THREE.Mesh = gltf.scene.getObjectByName('Table');
+                tableTop.receiveShadow = true;
 
                 // setup the overhead light
                 const overheadNode: THREE.Object3D = gltf.scene.getObjectByName('Overhead');
@@ -267,7 +259,6 @@ export default class MainScene {
                 // overhead light
                 this.lightBulb = gltf.scene.getObjectByName('LightBulb');
                 this.lightBulb.material = new THREE.MeshBasicMaterial({color: "#ffffff"});
-
 
                 // the sun controller used to simulate sun rise and sun set
                 this.sunControllerNode = gltf.scene.getObjectByName('SunController');

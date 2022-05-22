@@ -11,7 +11,7 @@ export default function Footer() {
         <Container>
             <Grid container>
                 <Grid item
-                    sm={12}>
+                    sm={12} mt={2}>
                     <Typography variant="h4" component="h4" color="inherit">
                         About
                     </Typography>
@@ -19,13 +19,21 @@ export default function Footer() {
                         I have been working with computer graphics for over 20 years now and have 
                         seen how graphics have progressed to an amazing level of realism, even within the web browser.
                         This simulation is using <a href="https://threejs.org/">ThreeJS</a> and is a very small sample of  
-                        what ThreeJS can do. 
-                        <br/>
+                        what ThreeJS can do.                         
+                    </Typography>            
+
+                    <Typography variant="h6" component="h5" color="inherit">                        
+                    </Typography>
+                    <Typography variant="h6" component="h5" color="inherit">                        
+                        This simulate uses ThreeJS. It integrates a few examples together into what we have here. The examples used are 
+                        
+                    
                     </Typography>
                     <Typography variant="h6" component="h5" color="inherit">
                         I hope to find some time to add more and maybe make it into a tutorial
                         We will see what happens...
                     </Typography>
+
                     
                 </Grid>
             </Grid>
