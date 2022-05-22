@@ -1,5 +1,3 @@
-import Box from "@mui/material/Box"
-import React, {useRef, useEffect, useState} from "react";
 import OrbitControls from "./OrbitControls";
 import * as THREE from 'three';
 import GLTFLoader from './GLTFLoader';
@@ -343,12 +341,12 @@ export default class MainScene {
      */
     render() {
 
-        if (this.dayState == DayState.Loop) {
+        if (this.dayState === DayState.Loop) {
             this.sunControllerNode.rotateX(.01);
-        } else if (this.dayState == DayState.Day) {
+        } else if (this.dayState === DayState.Day) {
             const axis = new THREE.Vector3(0, 0, -1);
             this.sunControllerNode.setRotationFromAxisAngle(axis, 0);
-        } else if (this.dayState == DayState.Night) {
+        } else if (this.dayState === DayState.Night) {
             const axis = new THREE.Vector3(0, 0, -1);
             this.sunControllerNode.setRotationFromAxisAngle(axis, 180);
         }
@@ -356,7 +354,7 @@ export default class MainScene {
         this.setSunAngle(this.renderer);
 
         // may not have been initialized yet
-        if (this.controls != undefined) {
+        if (this.controls !== undefined) {
             this.controls.update();
         }
 

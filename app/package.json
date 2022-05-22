@@ -35,7 +35,8 @@
       "react-app/jest"
     ]
   },
-  "homepage": "react-sample",
+  "main": "./src/",
+  "homepage": "https://shawndfl.github.io/react-sample/",  
   "browserslist": {
     "production": [
       ">0.2%",

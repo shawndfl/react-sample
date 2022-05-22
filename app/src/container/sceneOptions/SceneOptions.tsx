@@ -1,23 +1,20 @@
-import Box from '@mui/material/Box';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
-import BrightnessMediumIcon from '@mui/icons-material/BrightnessMedium';
-import KitchenIcon from '@mui/icons-material/Kitchen';
+//import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
+//import BrightnessMediumIcon from '@mui/icons-material/BrightnessMedium';
+//import KitchenIcon from '@mui/icons-material/Kitchen';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
 import { useContext } from 'react';
-import { DayState, ISceneProviderProps } from 'context/SceneContext';
 import { MainSceneContext } from 'context/SceneContext';
 
 /**
  * This component will create a speed dial component that allows the 
  * user to select different options that affect the scene.
  */
-export default function SceneOptions() {
-  const sceneContext = useContext(MainSceneContext);
+export default function SceneOptions() {  
 
   //const sceneData: props.sceneData;
 

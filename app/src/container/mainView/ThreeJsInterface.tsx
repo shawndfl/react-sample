@@ -1,9 +1,6 @@
 import Box from "@mui/material/Box"
-import React, {useRef, useEffect, useState} from "react";
-import * as THREE from 'three';
+import React, {useRef, useEffect} from "react";
 import MainScene from 'container/engine/MainScene';
-import { ReactDOM } from "react";
-import { ISceneData } from "context/SceneContext";
 
 export interface SceneProps {
     width: number;
@@ -21,14 +18,11 @@ interface Controls {
  * @param props This is the width and height of the webGL window.
  * @returns Something cool!
  */
-export default function ThreeJsInterface(props : SceneProps) {
-    const width = props.width;
-    const height = props.height;
+export default function ThreeJsInterface(props : SceneProps) {    
     //const sceneData = props.sceneData
 
     const mount = useRef < HTMLDivElement > (null);
-
-    const [isAnimating, setAnimating] = useState(true);
+    
     const controls = useRef < Controls > ();                
 
     useEffect(() => {
@@ -99,19 +93,7 @@ export default function ThreeJsInterface(props : SceneProps) {
 
             scene.dispose();
         }
-    }, [])
-
-    useEffect(() => {
-        if (isAnimating) {
-            if (controls.current != null) {
-                controls.current.start();
-            }
-        } else {
-            if (controls.current != null) {
-                controls.current.stop()
-            }
-        }
-    }, [isAnimating])
+    }, [])    
 
     return <Box sx={{
         width:"100%",

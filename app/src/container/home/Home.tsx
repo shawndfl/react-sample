@@ -1,24 +1,16 @@
 import './home.css';
 import Container from "@mui/material/Container/"
 import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper';
 import Card from '@mui/material/Card';
 import Grid from "@mui/material/Grid"
 import Typography from '@mui/material/Typography';
 import ThreeJsInterface from 'container/mainView/ThreeJsInterface';
-import TextureSelector from 'container/textureSelector/TextureSelector';
 import SceneOptions from 'container/sceneOptions/SceneOptions';
-import { useState, createContext } from 'react';
-import {ISceneProviderProps, ISceneData} from 'context/SceneContext';
 
 /**
  * The main home page. This will display the 3d scene and some other controls
  */
 export default function Home() {
-
-    function loadPage(item : string) {
-        console.debug("loading " + item);
-    }
     
     // scene state
     //const sceneData = useRef<ISceneData>();
