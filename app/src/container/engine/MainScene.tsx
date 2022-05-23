@@ -223,7 +223,7 @@ export default class MainScene {
      */
     loadModel() { // instantiate a loader
         const loader = new GLTFLoader();
-
+        
         // load a resource
         loader.load(
             // resource URL

@@ -161,7 +161,7 @@ export default class GLTFLoader extends Loader {
 
 			resourcePath = LoaderUtils.extractUrlBase( url );
 
-		}
+		}		
 
 		// Tells the LoadingManager to track an extra item, which resolves after
 		// the model is fully loaded. This means the count of items loaded will
