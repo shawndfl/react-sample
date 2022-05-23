@@ -16,7 +16,7 @@ export default function Footer() {
                         About
                     </Typography>
                     <Typography variant="h6" component="h5" color="inherit">
-                        I have been working with computer graphics for over 20 years now and have 
+                        I have been working with computer graphics for over 15 years now and have 
                         seen how graphics have progressed to an amazing level of realism, even within the web browser.
                         This simulation is using <a href="https://threejs.org/">ThreeJS</a> and is a very small sample of  
                         what ThreeJS can do.                         
