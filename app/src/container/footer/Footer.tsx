@@ -23,12 +23,7 @@ export default function Footer() {
                     </Typography>            
 
                     <Typography variant="h6" component="h5" color="inherit">                        
-                    </Typography>
-                    <Typography variant="h6" component="h5" color="inherit">                        
-                        This simulate uses ThreeJS. It integrates a few examples together into what we have here. The examples used are 
-                        
-                    
-                    </Typography>
+                    </Typography>                    
                     <Typography variant="h6" component="h5" color="inherit">
                         I hope to find some time to add more and maybe make it into a tutorial
                         We will see what happens...

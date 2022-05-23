@@ -177,7 +177,7 @@ export default class MainScene {
         this.camera.position.z = 4;
         this.camera.position.y = 4;
 
-        this.loadModel();
+        //this.loadModel();
     }
 
     /**
@@ -223,6 +223,9 @@ export default class MainScene {
      */
     loadModel() { // instantiate a loader
         const loader = new GLTFLoader();
+
+        loader.path = process.env.PUBLIC_URL + '/models';
+	    console.info("Loading " + loader.path );
 
         // load a resource
         loader.load(
