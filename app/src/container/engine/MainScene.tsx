@@ -227,7 +227,7 @@ export default class MainScene {
         // load a resource
         loader.load(
             // resource URL
-            'models/chair.gltf',
+            process.env.PUBLIC_URL + '/models/chair.gltf',
 
             // called when resource is loaded
             (gltf : any) => {
