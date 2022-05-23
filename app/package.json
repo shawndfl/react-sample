@@ -25,7 +25,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && cp -r build/* ../docs/",
+    "build": "react-scripts build && rm -rf ../docs/ && mkdir ../docs && cp -r build/* ../docs/",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -36,7 +36,7 @@
     ]
   },
   "main": "./src/",
-  "homepage": "https://shawndfl.github.io/react-sample/",  
+  "homepage": ".",  
   "browserslist": {
     "production": [
       ">0.2%",
