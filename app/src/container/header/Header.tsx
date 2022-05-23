@@ -12,7 +12,7 @@ export default function Header() {
       <AppBar position="static">
         <Toolbar className="tooBarBlack" >          
           <Typography variant="h4" component="h4" textAlign="center" sx={{ flexGrow: 1 }}>
-            Sample 3D Simulation with ThreeJS
+            3D Simulation with ThreeJS
           </Typography>
           <IconButton component="a" target="_blank" href="https://github.com/shawndfl"><GitHubIcon/></IconButton>
         </Toolbar>

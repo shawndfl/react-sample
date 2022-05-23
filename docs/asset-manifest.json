@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "https://shawndfl.github.io/react-sample/static/css/main.073c9b0a.css",
-    "main.js": "https://shawndfl.github.io/react-sample/static/js/main.c072499c.js",
-    "static/js/787.28cb0dcd.chunk.js": "https://shawndfl.github.io/react-sample/static/js/787.28cb0dcd.chunk.js",
-    "static/media/floor2.jpg": "https://shawndfl.github.io/react-sample/static/media/floor2.76f2c54928a0b3a7964f.jpg",
-    "index.html": "https://shawndfl.github.io/react-sample/index.html",
-    "main.073c9b0a.css.map": "https://shawndfl.github.io/react-sample/static/css/main.073c9b0a.css.map",
-    "main.c072499c.js.map": "https://shawndfl.github.io/react-sample/static/js/main.c072499c.js.map",
-    "787.28cb0dcd.chunk.js.map": "https://shawndfl.github.io/react-sample/static/js/787.28cb0dcd.chunk.js.map"
+    "main.css": "/react-sample/static/css/main.073c9b0a.css",
+    "main.js": "/react-sample/static/js/main.f773770c.js",
+    "static/js/787.28cb0dcd.chunk.js": "/react-sample/static/js/787.28cb0dcd.chunk.js",
+    "static/media/floor2.jpg": "/react-sample/static/media/floor2.76f2c54928a0b3a7964f.jpg",
+    "index.html": "/react-sample/index.html",
+    "main.073c9b0a.css.map": "/react-sample/static/css/main.073c9b0a.css.map",
+    "main.f773770c.js.map": "/react-sample/static/js/main.f773770c.js.map",
+    "787.28cb0dcd.chunk.js.map": "/react-sample/static/js/787.28cb0dcd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.c072499c.js"
+    "static/js/main.f773770c.js"
   ]
 }
