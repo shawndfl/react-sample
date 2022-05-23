@@ -33,9 +33,9 @@ function App() {
                 <Header/>                
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/"
+                        <Route path={process.env.PUBLIC_URL + "/"}
                             element={<Home/>}></Route>
-                        <Route path="/data"
+                        <Route path={process.env.PUBLIC_URL + "/data"}
                             element={<UserRequest/>}></Route>
                     </Routes>
                 </BrowserRouter>

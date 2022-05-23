@@ -177,7 +177,7 @@ export default class MainScene {
         this.camera.position.z = 4;
         this.camera.position.y = 4;
 
-        //this.loadModel();
+        this.loadModel();
     }
 
     /**
