@@ -342,7 +342,7 @@ export default class MainScene {
     render() {
 
         if (this.dayState === DayState.Loop) {
-            this.sunControllerNode.rotateX(.01);
+            this.sunControllerNode.rotateX(.001);
         } else if (this.dayState === DayState.Day) {
             const axis = new THREE.Vector3(0, 0, -1);
             this.sunControllerNode.setRotationFromAxisAngle(axis, 0);
